@@ -74,11 +74,12 @@ class TableController extends Controller
              "org_name.max" => "The name entered exceeds the maximum length ",
              "org_code.required" => "Please enter organization code.",
              "org_code.unique" => "The organization code already exits.",
+             "org_code.regex" => "The organization code contains only lowercase alphabet, numbers and underscore.",
          ];
  
          $validateAtt = $request->validate([
              'org_name' => 'required|max:191',
-             'org_code' => 'required|unique:oraganization'
+             'org_code' => 'required|unique:oraganization|regex:/^[a-z0-9_]+$/'
          ],$messages);
 
          return $validateAtt;
