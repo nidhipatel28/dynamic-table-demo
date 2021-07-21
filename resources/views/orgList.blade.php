@@ -10,6 +10,7 @@
 <body>
     
 <div class="container mt-5">
+    <a href="{{ route('addGroup')}}">Add organization</a>
     <h2 class="mb-4">Organization List</h2>
     <div class="alert alert-success" style="display:none"></div>
     <table class="table table-bordered yajra-datatable">
@@ -23,6 +24,11 @@
             </tr>
         </thead>
         <tbody>
+        @if($orgList->count() == 0)
+            <tr>
+                <td colspan="5"> No records found.</td>
+            </tr>
+        @else
         @foreach($orgList as $key => $org)
             <tr class="table-list">
                 <td>{{ $key+1 }}</td>
@@ -31,11 +37,13 @@
                 </td>
                 <td>{{ $org->org_code }}</td>
                 <td><input type="checkbox" class="status" org-id="{{ $org->id }}" name="status" value="{{$org->status}}" {{ ($org->status == 1) ? 'checked' : ''}}></td>
-                <td><input type="submit" value="Edit" org-id="{{ $org->id }}" class="btn btn-primary editbtn">
+                <td><input type="submit" value="Edit" id="update_{{ $org->id }}" org-id="{{ $org->id }}" class="btn btn-primary editbtn">
                 <input type="submit" value="Delete" data-id="{{ $org->id }}" class="btn btn-danger delete"></td>
             </tr>
         @endforeach
         </tbody>
+        @endif
+        
     </table>
 </div>
    
@@ -72,11 +80,9 @@ $(document).ready(function(){
             type: 'post',
             data: {_token: CSRF_TOKEN,orgId: orgId,name: name},
             success: function(response){
-                console.log(response);
-                $('.savebtn').val('Edit');
-                $('.savebtn').addClass('editbtn');
-                $('.savebtn').removeClass('savebtn');
-                var $this = $('.org-name-'+orgId);
+                $('#update_'+orgId).val('Edit');
+                $('#update_'+orgId).addClass('editbtn');
+                $('#update_'+orgId).removeClass('savebtn');
                 $('.org-name-'+orgId).text(name);
                 $('.alert-success').css('display','block');
                 $('.alert-success').text(response.message);
